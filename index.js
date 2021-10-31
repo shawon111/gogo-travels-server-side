@@ -58,6 +58,30 @@ async function run() {
         res.json(result);
       })
       
+      //delete api for deleting orders
+      app.delete('/packages/package/:id', async (req, res) => {
+        const Id = req.params.id;
+        const query = {_id: ObjectId(Id)};
+        const result = await orderCollection.deleteOne(query);
+        res.json(result);
+      })
+
+      //update api for updating order status
+      app.put('/packages/package/:id', async (req, res) => {
+        const Id = req.params.id;
+        const filter = {_id: ObjectId(Id)};
+        const options = { upsert: true };
+        const updatedOrder = req.body;
+        const updateDoc = {
+          $set: {
+            status: updatedOrder.status
+          }
+        };
+        const result = await orderCollection.updateOne(filter, updateDoc, options);
+        res.json(result);
+      })
+
+
     } finally {
     //   await client.close();
     }
